@@ -1,3 +1,4 @@
+
 """
 Universidad del Valle de Guatemala 
 Seguridad en sistemas de computación
@@ -69,7 +70,7 @@ def creacion_llaves():
 		print("solo numeros")
 	else:
 		#Calculamos n 
-		n = prim_uno * prim_dos
+		N = prim_uno * prim_dos
 
 		#Calculamos la función phi de Euler
 		phi = (prim_uno-1)*(prim_dos-1)
@@ -77,18 +78,30 @@ def creacion_llaves():
 		e = coprimes(phi)
 		d = modinv(e, phi)
 
-		print("llave publica: " + str(e) + str(n))
-		print("llave privada: " + str(d) + str(n))
+		print("llave publica: " + str(e) + str(N))
+		print("e: " + str(e))
+		print("llave privada: " + str(d) + str(N))
+		print("d: " + str(d))
+		print("n: " + str(N))
 
 		#Creamos archivo con las llaves
 		text_file = open("llave.txt", "w")
-		text_file.write("n = " + str(n))
-		text_file.write("e = " + str(e))
-		text_file.write("d = " + str(d))
-		text_file.write("llave pública = " + str(e) + str(n))
-		text_file.write("llave privada = " + str(d) + str(n))
+		text_file.write(" n = " + str(N))
+		text_file.write(" e = " + str(e))
+		text_file.write(" d = " + str(d))
+		text_file.write(" llave pública = " + str(e) + str(N))
+		text_file.write(" llave privada = " + str(d) + str(N))
 		text_file.close()
 
+def encriptar(m, e, n):
+	cipher = modinv(m**e, n)
+	if cipher == None: print("no existe un modular inverso para este bloque "+ str(m))
+	return cipher
+
+def descifrar(m, d, n):
+	s = modinv(m**d, n)
+	if s == None: print("no existe un modular inverso para este bloque "+ str(m))
+	return s
 
 def menu():
 
@@ -111,10 +124,21 @@ def menu():
 			creacion_llaves()
 			flag = False
 		elif res == 2:
-			print("cifrado")
+			msg = input("mensaje para encriptar: ")
+			e = int(input("ingrese <e> de su llave pública: "))
+			n = int(input("ingrese <n> de su llave pública: "))
+			#ciframos mensaje
+			cipher = ''.join([chr(encriptar(ord(x), e, n)) for x in list(msg)])
+			print("mensaje encriptado: " + cipher)
+
 			flag = False
 		elif res == 3:
-			print("descifrado")
+			msg = input("mensaje para descifrar: ")
+			d = int(input("ingrese <d> de su llave pública: "))
+			n = int(input("ingrese <n> de su llave pública: "))
+			#desciframos mensaje
+			simpletxt = ''.join([chr(encriptar(ord(x), d, n)) for x in list(msg)])
+			print("mensaje descifrado: " + simpletxt)
 			flag = False
 		elif res == NUM_RAND:
 			print("solo numeros")
